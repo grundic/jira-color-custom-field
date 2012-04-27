@@ -58,10 +58,10 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <properties>
-    <amps.version>3.7</amps.version>
-    <jira.version>4.4.1</jira.version>
-    <jira.data.version>4.4</jira.data.version>
-  </properties>
+
+   <properties>
+        <jira.version>5.0.2</jira.version>
+        <amps.version>3.9.1</amps.version>
+    </properties>
 </project>
 
