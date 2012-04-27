@@ -1,30 +1,25 @@
 package ru.mail.jira.plugins.jira.customfields;
 
-import com.atlassian.jira.issue.customfields.converters.SelectConverter;
-import com.atlassian.jira.issue.customfields.converters.StringConverter;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.customfields.impl.SelectCFType;
+import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
 import com.atlassian.jira.issue.customfields.manager.OptionsManager;
+import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
+import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
+import com.atlassian.jira.issue.fields.rest.json.beans.JiraBaseUrls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.atlassian.jira.issue.customfields.impl.TextCFType;
-import com.atlassian.jira.issue.customfields.manager.GenericConfigManager;
-import com.atlassian.jira.issue.customfields.persistence.CustomFieldValuePersister;
-import com.atlassian.jira.issue.customfields.impl.FieldValidationException;
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.fields.CustomField;
-import com.atlassian.jira.issue.fields.config.FieldConfig;
-import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 
+import java.awt.*;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.awt.Color;
 import java.util.Map;
 
 public class ColorCustomField extends SelectCFType {
   private static final Logger log = LoggerFactory.getLogger(ColorCustomField.class);
 
-  public ColorCustomField(CustomFieldValuePersister customFieldValuePersister, StringConverter stringConverter, SelectConverter selectConverter, OptionsManager optionsManager, GenericConfigManager genericConfigManager) {
-    super(customFieldValuePersister, stringConverter, selectConverter, optionsManager, genericConfigManager);
+  public ColorCustomField(CustomFieldValuePersister customFieldValuePersister, OptionsManager optionsManager, GenericConfigManager genericConfigManager, JiraBaseUrls jiraBaseUrls) {
+    super(customFieldValuePersister, optionsManager, genericConfigManager, jiraBaseUrls);
   }
 
 
@@ -40,13 +35,10 @@ public class ColorCustomField extends SelectCFType {
       return map;
     }
 
-    FieldConfig fieldConfig = field.getRelevantConfig(issue);
-
-
     Object color = issue.getCustomFieldValue(field);
 
     if (null != color) {
-      try{
+      try {
         // get color by hex or octal value
         Color c = Color.decode(color.toString());
         map.put("colorHex", getColorString(c));
@@ -56,7 +48,7 @@ public class ColorCustomField extends SelectCFType {
         try {
           // try to get a color by name using reflection
           Field colorField = Color.class.getField(color.toString().toLowerCase());
-          Color c = (Color)colorField.get(null);
+          Color c = (Color) colorField.get(null);
 
           map.put("colorHex", getColorString(c));
         } catch (Exception ce) {
@@ -69,7 +61,7 @@ public class ColorCustomField extends SelectCFType {
     return map;
   }
 
-  private String getColorString(Color color){
+  private String getColorString(Color color) {
     String rgb = Integer.toHexString(color.getRGB());
     rgb = rgb.substring(2, rgb.length());
     return rgb;
