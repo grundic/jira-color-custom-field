@@ -1,0 +1,1 @@
+Custom field for Atlassian Jira, which will paint selected custom field value to appropriate color
